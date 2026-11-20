@@ -750,7 +750,7 @@ let DX=null;
 async function rDict(){
   if(!canWeb){$('#app').innerHTML=`<button class="ghost sm" id="bk">← Çalış</button><h2>👂 Dinle ve Yaz</h2><div class="card">Bu cihaz/tarayıcı sesli okumayı desteklemiyor. Chrome (Android) veya Safari (iPhone) ile dene.</div>`;$('#bk').onclick=toWork;return;}
   if(!DX||DX.lvl!==S.lvl){const p=await needPool('👂 Dinle ve Yaz','dict');if(!p)return;const ex=[];try{const d=DATA[S.lvl]||{};(d.tp||[]).forEach(t=>(t.s||[]).forEach(x=>ex.push({en:String(x.en).replace(ZW,''),tr:String(x.tr).replace(ZW,'')})));(d.dl||[]).forEach(t=>(t.l||[]).forEach(x=>ex.push({en:String(x.en).replace(ZW,''),tr:String(x.tr).replace(ZW,'')})));}catch(e){}
-    const seenD=new Set();DX={lvl:S.lvl,items:shuffle([...p,...ex].filter(x=>x.en&&x.en.split(' ').length<=14&&x.en.split(' ').length>=3&&!seenD.has(x.en)&&seenD.add(x.en))).slice(0,8),k:0,ok:0,res:null};}
+    const seenD=new Set();DX={lvl:S.lvl,items:shuffle([...p,...ex].filter(x=>x.en&&x.tr&&x.en.split(' ').length<=14&&x.en.split(' ').length>=3&&!seenD.has(x.en)&&seenD.add(x.en))).slice(0,8),k:0,ok:0,res:null};}
   if(DX.k>=DX.items.length){bump(5);const o=DX.ok,n=DX.items.length;DX=null;
     $('#app').innerHTML=`<h2>🎉 Bitti!</h2><div class="card" style="text-align:center"><div style="font-size:42px;font-weight:800">${o} / ${n}</div><p>cümleyi birebir doğru yazdın</p></div><div class="row"><button id="ag">Yeni set</button><button class="ghost" id="bk">Çalış merkezi</button></div>`;
     $('#ag').onclick=rDict;$('#bk').onclick=toWork;return;}
@@ -768,11 +768,12 @@ async function rDict(){
   if(r&&$('#nb'))$('#nb').onclick=()=>{DX.k++;DX.res=null;rDict();};
 }
 // ---- konuşma pratiği ----
+function spkExtra(){const ex=[];try{const d=DATA[S.lvl]||{};(d.tp||[]).forEach(t=>(t.s||[]).forEach(x=>ex.push({en:String(x.en).replace(ZW,''),tr:String(x.tr).replace(ZW,'')})));(d.dl||[]).forEach(t=>(t.l||[]).forEach(x=>ex.push({en:String(x.en).replace(ZW,''),tr:String(x.tr).replace(ZW,'')})));}catch(e){}const sn=new Set();return ex.filter(x=>x.en&&!sn.has(x.en)&&sn.add(x.en));}
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 let SX=null,REC=null;
 async function rSpeak(){
   if(!SR){$('#app').innerHTML=`<button class="ghost sm" id="bk">← Çalış</button><h2>🎤 Konuşma Pratiği</h2><div class="card">Bu tarayıcı konuşma tanımayı desteklemiyor. Android'de Chrome ile dene.<p class="small">Not: Konuşma tanıma, tarayıcının/telefonun kendi servisiyle çalışır.</p></div>`;$('#bk').onclick=toWork;return;}
-  if(!SX||SX.lvl!==S.lvl){const p=await needPool('🎤 Konuşma Pratiği','speak');if(!p)return;SX={lvl:S.lvl,items:shuffle(p.filter(x=>{const n=x.en.split(' ').length;return n>=3&&n<=10;})).slice(0,5),k:0,ok:0,res:null,tries:0,listening:false,msg:''};}
+  if(!SX||SX.lvl!==S.lvl){const p=await needPool('🎤 Konuşma Pratiği','speak');if(!p)return;SX={lvl:S.lvl,items:shuffle([...p,...spkExtra()].filter(x=>{const n=x.en.split(' ').length;return x.tr&&n>=3&&n<=10;})).slice(0,5),k:0,ok:0,res:null,tries:0,listening:false,msg:''};}
   if(SX.k>=SX.items.length){bump(5);const o=SX.ok,n=SX.items.length;SX=null;
     $('#app').innerHTML=`<h2>🎉 Bitti!</h2><div class="card" style="text-align:center"><div style="font-size:42px;font-weight:800">${o} / ${n}</div><p>cümleyi başarıyla söyledin</p></div><div class="row"><button id="ag">Yeni set</button><button class="ghost" id="bk">Çalış merkezi</button></div>`;
     $('#ag').onclick=rSpeak;$('#bk').onclick=toWork;return;}
