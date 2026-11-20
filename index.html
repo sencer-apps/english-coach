@@ -272,22 +272,24 @@ let ci=0,flip=false,order=[];
 function rCards(){
   preloadAll();
   if(S.topic==='top'&&!DECK.top[S.lvl].length&&LK[S.lvl]){$('#app').innerHTML=`<h2>🃏 Kelime Kartları</h2>${chips()}<div style="margin-top:8px">${tchips()}</div><div class="card small">Yükleniyor…</div>`;wire();loadLevel(S.lvl).then(()=>{if(view==='cards')rCards();});return;}
-  const d=deck();if(!order.length||order.key!==S.topic+S.lvl+d.length){order=shuffle(d.map((_,i)=>i));order.key=S.topic+S.lvl+d.length;ci=0;flip=false;}
+  const d=deck();if(order.key!==S.topic+S.lvl+d.length){order=shuffle(d.map((_,i)=>i).filter(i=>!S.known[d[i].w]));order.key=S.topic+S.lvl+d.length;ci=0;flip=false;}
   if(!d.length){$('#app').innerHTML=`<h2>🃏 Kelime Kartları</h2>${chips()}<div style="margin-top:8px">${tchips()}</div><div class="card">Bu seviyede kelime yok ya da yüklenemedi.</div>`;wire();return;}
-  const w=d[order[ci%order.length]];
+  if(!order.length){$('#app').innerHTML=`<h2>🃏 Kelime Kartları</h2>${chips()}<div style="margin-top:8px">${tchips()}</div><div class="card" style="text-align:center"><div style="font-size:40px">🎉</div><b>Bu destedeki tüm kelimeleri biliyorsun!</b><p class="small">✅ ${d.filter(x=>S.known[x.w]).length} kelime bilinenlerde.</p><button id="rk">Bu desteyi baştan çalış</button></div>`;wire();$('#rk').onclick=()=>{d.forEach(x=>{delete S.known[x.w];});save();order=[];order.key='';rCards();};return;}
+  if(ci>=order.length)ci=0;
+  const w=d[order[ci]];
   $('#app').innerHTML=`<h2>🃏 Kelime Kartları</h2>${chips()}<div style="margin-top:8px">${tchips()}</div>
   <div class="card flash" id="fl">${flip?`${emoBig(w.w)}<div class="w" style="font-size:26px">${esc(w.tr)}</div>${ipaLine(w.w)}${exHtml(w)}`:`${emoBig(w.w)}<div class="w">${esc(w.w)}</div>${ipaLine(w.w)}<div class="small">Çevirmek için dokun</div>`}</div>
-  <div class="row"><button class="ghost" id="sp" ${canSay()?'':'hidden'}>🔊 Dinle</button><button class="ghost" id="ag">↻ Tekrar</button><button class="ghost" id="nbk">📒 Deftere</button><button class="ghost" id="pv">← Önceki</button><button class="ghost" id="sk">Atla →</button><button id="kn">✓ Biliyorum</button></div>
-  <p class="small">${ci%order.length+1} / ${order.length} • ✅ ${d.filter(x=>S.known[x.w]).length} biliyorum</p>`;
+  <div class="row"><button class="ghost" id="sp" ${canSay()?'':'hidden'}>🔊 Dinle</button><button class="ghost" id="ag">🔁 Bilmiyorum</button><button class="ghost" id="nbk">📒 Deftere</button><button class="ghost" id="pv">← Önceki</button><button class="ghost" id="sk">Atla →</button><button id="kn">✓ Biliyorum</button></div>
+  <p class="small">Kalan: ${order.length} kelime • ✅ ${d.filter(x=>S.known[x.w]).length} biliyorum</p><p class="small">✓ Biliyorum: kart bir daha gelmez • 🔁 Bilmiyorum: birkaç kart sonra tekrar gelir • 📒 Deftere: kelimeyi tekrar defterine ekler</p>`;
   wire();
   $('#fl').onclick=()=>{flip=!flip;if(flip)say(w.w);rCards();};
   $('#sp').onclick=()=>say(w.ex&&flip?w.ex:w.w);
   $('#nbk').onclick=()=>toast(nbAdd(w.w,w.tr,w.ex)?'📒 Deftere eklendi':'Zaten defterinde');
   const next=()=>{ci++;flip=false;rCards();};
-  $('#ag').onclick=()=>{delete S.known[w.w];save();next();};
+  $('#ag').onclick=()=>{delete S.known[w.w];save();const x=order.splice(ci,1)[0];order.splice(Math.min(ci+4,order.length),0,x);flip=false;rCards();};
   $('#sk').onclick=next;
   $('#pv').onclick=()=>{ci=(ci-1+order.length)%order.length;flip=false;rCards();};
-  $('#kn').onclick=()=>{S.known[w.w]=1;bump();next();};
+  $('#kn').onclick=()=>{S.known[w.w]=1;bump();order.splice(ci,1);flip=false;rCards();};
 }
 async function genWords(){
   const m=$('#gmsg');if(!SAMPLE){m.textContent='Bu özellik sadece claude.ai içinde çalışır.';return;}
