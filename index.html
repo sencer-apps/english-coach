@@ -318,7 +318,7 @@ function mkQs(words,lv,n){
   });
   return qs;
 }
-function mkQuiz(){qz={qs:mkQs(deck(),S.lvl,10),i:0,c:0,done:false,lock:false};}
+function mkQuiz(){const dk=deck(),un=dk.filter(x=>!S.known[x.w]);qz={qs:mkQs(un.length>=10?un:dk,S.lvl,10),i:0,c:0,done:false,lock:false};}
 
 function rQuiz(){
   if(S.topic==='top'&&!DECK.top[S.lvl].length&&LK[S.lvl]){$('#app').innerHTML=`<h2>✅ Quiz</h2>${chips()}<div style="margin:8px 0">${tchips()}</div><div class="card small">Yükleniyor…</div>`;wire();loadLevel(S.lvl).then(()=>{if(view==='quiz')rQuiz();});return;}
