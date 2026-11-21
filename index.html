@@ -1952,6 +1952,70 @@ const KALRAW=`
 - What time would you like to come? | Saat kaçta gelmek istersiniz?
 - Could I have your name and phone number? | Adınızı ve telefon numaranızı alabilir miyim?
 - We'll hold the table for fifteen minutes. | Masayı on beş dakika tutarız.
+# ☕ Kafede
++ Could I have a latte and a croissant, please? | Bir latte ve bir kruvasan alabilir miyim lütfen?
+- Is that for here or to go? | Burada mı yiyeceksiniz, paket mi?
++ To go, please. | Paket olsun lütfen.
++ Do you have oat milk? | Yulaf sütünüz var mı?
++ Can I get the Wi-Fi password? | Wi-Fi şifresini alabilir miyim?
+- What size would you like? | Hangi boyut olsun?
+- Would you like anything else? | Başka bir şey ister misiniz?
+- That'll be six fifty. | Altı elli tutuyor.
+- We'll call your name when it's ready. | Hazır olunca adınızı çağıracağız.
+# 📦 Kargo ve teslimat
++ I'm waiting for a package that hasn't arrived yet. | Henüz gelmeyen bir paket bekliyorum.
++ Could you tell me where my parcel is? | Paketimin nerede olduğunu söyler misiniz?
++ Can you leave it with my neighbor? | Komşuma bırakabilir misiniz?
++ I'd like to send this parcel to Istanbul. | Bu paketi İstanbul'a göndermek istiyorum.
+- Could you sign here, please? | Burayı imzalar mısınız lütfen?
+- Your package will arrive tomorrow between nine and twelve. | Paketiniz yarın dokuz ile on iki arasında gelecek.
+- Do you have the tracking number? | Takip numaranız var mı?
+- Nobody was home when we came. | Geldiğimizde evde kimse yoktu.
+# 🔁 İade ve değişim
++ I'd like to return this, it doesn't fit. | Bunu iade etmek istiyorum, olmadı.
++ Can I exchange it for a bigger size? | Bir büyük bedenle değiştirebilir miyim?
++ I have the receipt right here. | Fişim burada.
++ I'd prefer a refund, please. | Para iadesini tercih ederim.
+- Do you have the receipt with you? | Fişiniz yanınızda mı?
+- You can return it within thirty days. | Otuz gün içinde iade edebilirsiniz.
+- The refund will go back to your card. | İade kartınıza yapılacak.
+- Was there a problem with the item? | Üründe bir sorun mu vardı?
+# 🚗 Araba kiralama
++ I'd like to rent a car for three days. | Üç günlüğüne araba kiralamak istiyorum.
++ Is insurance included in the price? | Fiyata sigorta dahil mi?
++ Does it have a full tank? | Deposu dolu mu?
++ Where should I return the car? | Arabayı nereye teslim etmeliyim?
+- May I see your driving license and passport? | Ehliyetinizi ve pasaportunuzu görebilir miyim?
+- Would you like a manual or an automatic? | Manuel mi otomatik mi istersiniz?
+- Please bring it back with a full tank. | Lütfen depo dolu şekilde getirin.
+- There is a deposit of two hundred euros. | İki yüz euro depozito var.
+# 🧳 Kayıp eşya
++ I think I left my bag on the train. | Sanırım çantamı trende unuttum.
++ It's a black backpack with a blue zip. | Mavi fermuarlı siyah bir sırt çantası.
++ My phone is missing, I may have dropped it. | Telefonum yok, düşürmüş olabilirim.
++ Could you call me if it turns up? | Çıkarsa beni arar mısınız?
+- When and where did you lose it? | Ne zaman ve nerede kaybettiniz?
+- Can you describe it? | Tarif edebilir misiniz?
+- Please fill in this form. | Lütfen bu formu doldurun.
+- We'll contact you if we find it. | Bulursak sizinle iletişime geçeriz.
+# 🎓 Okul ve üniversite
++ I'd like to enroll in the English course. | İngilizce kursuna kaydolmak istiyorum.
++ When does the semester start? | Dönem ne zaman başlıyor?
++ Could you explain that again, please? | Bunu bir daha açıklar mısınız lütfen?
++ Is the deadline for the assignment Friday? | Ödevin son teslim tarihi cuma mı?
+- Please hand in your assignment by Monday. | Lütfen ödevinizi pazartesiye kadar teslim edin.
+- Do you have any questions? | Sorunuz var mı?
+- The exam will cover chapters one to five. | Sınav bir ile beşinci bölümleri kapsayacak.
+- You'll need to register online first. | Önce internetten kayıt olmanız gerekiyor.
+# 💻 Teknik destek
++ My internet isn't working. | İnternetim çalışmıyor.
++ I can't log in to my account. | Hesabıma giriş yapamıyorum.
++ I've already restarted it. | Zaten yeniden başlattım.
++ Could you send someone to take a look? | Birini bakmaya gönderebilir misiniz?
+- Have you tried turning it off and on again? | Kapatıp açmayı denediniz mi?
+- Can you tell me your account number? | Hesap numaranızı söyler misiniz?
+- A technician will visit you tomorrow. | Yarın bir teknisyen size gelecek.
+- Please hold while I check. | Kontrol edene kadar lütfen hatta kalın.
 `;
 
 // ---- Konuşma Kalıpları: durum bazlı "ne söylenir" rehberi ----
@@ -2570,7 +2634,7 @@ bus:_bg('#cfe8f8','#7a7a86',190)+_pi('bus',160,40,300)+_pi('tree',560,70,100)+_w
 gym:_bg('#e8f0e0','#a8b4a0')+_pi('mirror',30,40,110)+_pi('clock',560,24,70)+_who('trainer','man')+_pi('basketball',290,196,60)+_pi('medal',370,170,66),
 };
 const _SCK=[['☕','cafe'],['🏨','hotel'],['🚕','taxi'],['🛒','shop'],['👗','shop'],['🛍','shop'],['🍽','restaurant'],['🏥','doctor'],['🚨','doctor'],['📞','phone'],['📅','phone'],['🚆','station'],['💼','interview'],['🏢','interview'],['✈','airport'],['🌴','airport'],['🧭','street'],['💊','pharmacy'],['👋','meeting'],['💬','meeting'],['💇','hair'],['😠','complaint'],['🏛','office'],['🏦','office'],['🎟','cinema'],['🏋','gym'],['🔧','taxi'],['🏘','neighbour']];
-const _SCW=[[/kuaf/i,'hair'],[/tanış|rencontre|arkadaş|ami\b/i,'meeting'],[/kafe|café/i,'cafe'],[/market|alışveriş|vêtement|acheter|kıyafet/i,'shop'],[/yol sor|chemin/i,'street'],[/telefon|téléphone/i,'phone'],[/okul|école/i,'school'],[/otobüs|\bbus\b/i,'bus'],[/yemek|restoran|restaurant/i,'restaurant'],[/iş görüş|toplantı|réunion|entretien/i,'interview'],[/şikâyet|plainte|réclamation/i,'complaint'],[/ev kiral|daire|appartement/i,'apartment'],[/banka|banque|posta/i,'office'],[/tren|train|gare|istasyon/i,'station'],[/otel|hôtel|hotel/i,'hotel'],[/doktor|médecin|hastane/i,'doctor'],[/havaalan|havalimanı|aéroport|airport/i,'airport'],[/taksi|taxi/i,'taxi'],[/eczane|pharmacie/i,'pharmacy'],[/komşu|voisin/i,'neighbour'],[/uçuş|\bvol\b/i,'airport'],[/sinema|cinéma/i,'cinema'],[/hastane|hôpital|sağlık/i,'doctor'],[/kütüphane|bibliothèque|dil kurs|akademik|thèse|séminaire|ders/i,'school'],[/garagiste|tamir|plomberie/i,'taxi'],[/maaş|müzakere|négociation|pazarlık|proje|performans|ortaklık|sunum|konferans|kriz|comité|entretien|mülakat|toplantı|réunion|copropriété|basın|interview|söyleşi|sözle/i,'interview'],[/kargo|prêt|sigorta|poste|dava|plaidoirie|kira sorun/i,'office'],[/table|masa|dîner|yemeğinde/i,'restaurant'],[/collègue|iş arkadaş|anlaşmazlık|plan yap|plan\b|tatil/i,'meeting'],[/müze|musée|sanat|galerie|atelier/i,'office']];
+const _SCW=[[/iade|retour|değişim/i,'shop'],[/araba|voiture/i,'taxi'],[/kayıp|perdu/i,'station'],[/okul|école|üniversite/i,'school'],[/teknik|technique/i,'office'],[/kargo|colis|teslimat/i,'neighbour'],[/kuaf/i,'hair'],[/tanış|rencontre|arkadaş|ami\b/i,'meeting'],[/kafe|café/i,'cafe'],[/market|alışveriş|vêtement|acheter|kıyafet/i,'shop'],[/yol sor|chemin/i,'street'],[/telefon|téléphone/i,'phone'],[/okul|école/i,'school'],[/otobüs|\bbus\b/i,'bus'],[/yemek|restoran|restaurant/i,'restaurant'],[/iş görüş|toplantı|réunion|entretien/i,'interview'],[/şikâyet|plainte|réclamation/i,'complaint'],[/ev kiral|daire|appartement/i,'apartment'],[/banka|banque|posta/i,'office'],[/tren|train|gare|istasyon/i,'station'],[/otel|hôtel|hotel/i,'hotel'],[/doktor|médecin|hastane/i,'doctor'],[/havaalan|havalimanı|aéroport|airport/i,'airport'],[/taksi|taxi/i,'taxi'],[/eczane|pharmacie/i,'pharmacy'],[/komşu|voisin/i,'neighbour'],[/uçuş|\bvol\b/i,'airport'],[/sinema|cinéma/i,'cinema'],[/hastane|hôpital|sağlık/i,'doctor'],[/kütüphane|bibliothèque|dil kurs|akademik|thèse|séminaire|ders/i,'school'],[/garagiste|tamir|plomberie/i,'taxi'],[/maaş|müzakere|négociation|pazarlık|proje|performans|ortaklık|sunum|konferans|kriz|comité|entretien|mülakat|toplantı|réunion|copropriété|basın|interview|söyleşi|sözle/i,'interview'],[/kargo|prêt|sigorta|poste|dava|plaidoirie|kira sorun/i,'office'],[/table|masa|dîner|yemeğinde/i,'restaurant'],[/collègue|iş arkadaş|anlaşmazlık|plan yap|plan\b|tatil/i,'meeting'],[/müze|musée|sanat|galerie|atelier/i,'office']];
 function sceneSvg(title){let k=null;const t=String(title);
   if(t.indexOf('🏠')>=0)k=/Komşu/.test(t)?'neighbour':'apartment';else{const f=_SCK.find(a=>t.indexOf(a[0])>=0);k=f&&f[1];}
   if(!k){const w=_SCW.find(a=>a[0].test(t));k=w&&w[1];}
