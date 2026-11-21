@@ -249,10 +249,10 @@ function pv(u){try{let pick=null;let sv=null;try{sv=localStorage.getItem('vc_'+V
 let view='home';
 const HASNET=typeof Peer!=='undefined';
 const NAV=[['home','🏠','Ana'],['story','📖','Hikâye'],['work','🧠','Çalış']].concat(HASNET?[['duel','⚔️','Yarış']]:[],[['prog','📊','İlerleme']]);
-const WORKV=['cards','quiz','nb','nbr','dict','speak','cloze','mis','tr','irr','dlg','gr','pic','ph','em','num','pron','ten','rdy','srs','lis','sen','kal','wri','pr2','plan'];
+const WORKV=['cards','quiz','nb','nbr','dict','speak','cloze','mis','tr','irr','dlg','gr','pic','ph','em','num','pron','ten','rdy','srs','lis','sen','kal','kq','wri','pr2','plan'];
 function renderNav(){$('#nav').innerHTML=NAV.map(n=>`<button data-v="${n[0]}" class="${view===n[0]||(view==='test'&&n[0]==='home')||(SUBV.includes(view)&&n[0]==='story')||(WORKV.includes(view)&&n[0]==='work')?'on':''}"><b>${n[1]}</b>${n[2]}</button>`).join('');
   $('#nav').querySelectorAll('button').forEach(b=>b.onclick=()=>{view=b.dataset.v;render();});}
-function render(){stopAudio();if(view!=='duel'&&DU&&!DU.keep)duelLeave();renderNav();({home:rHome,cards:rCards,quiz:rQuiz,chat:rChat,test:rTest,duel:rDuel,story:rStoryHome,reader:rReader,build:rBuild,prac:rPrac,exam:rExam,work:rWork,nb:rNb,nbr:rNbr,dict:rDict,speak:rSpeak,cloze:rCloze,mis:rMis,tr:rTr,irr:rIrr,dlg:rDlg,gr:rGr,pic:rPic,ph:rPh,em:rEm,num:rNum,pron:rPron,ten:rTen,rdy:rRdy,prog:rProg,srs:rSrs,lis:rLis,sen:rSen,kal:rKal,wri:rWri,pr2:rPr2,plan:rPlan})[view]();window.scrollTo(0,0);}
+function render(){stopAudio();if(view!=='duel'&&DU&&!DU.keep)duelLeave();renderNav();({home:rHome,cards:rCards,quiz:rQuiz,chat:rChat,test:rTest,duel:rDuel,story:rStoryHome,reader:rReader,build:rBuild,prac:rPrac,exam:rExam,work:rWork,nb:rNb,nbr:rNbr,dict:rDict,speak:rSpeak,cloze:rCloze,mis:rMis,tr:rTr,irr:rIrr,dlg:rDlg,gr:rGr,pic:rPic,ph:rPh,em:rEm,num:rNum,pron:rPron,ten:rTen,rdy:rRdy,prog:rProg,srs:rSrs,lis:rLis,sen:rSen,kal:rKal,kq:rKq,wri:rWri,pr2:rPr2,plan:rPlan})[view]();window.scrollTo(0,0);}
 const chips=()=>`<div class="row">${LEVELS.map(l=>`<button class="chip ${l===S.lvl?'sel':''}" data-l="${l}">${l}</button>`).join('')}</div>`;
 const tchips=()=>`<div class="row">${Object.entries(TOPICS).map(([k,v])=>`<button class="chip ${k===S.topic?'sel':''}" data-t="${k}">${v.ic} ${v.n}</button>`).join('')}</div>`;
 function wire(){document.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{S.lvl=b.dataset.l;save();render();});document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{S.topic=b.dataset.t;save();render();});}
@@ -1805,24 +1805,116 @@ const KALRAW=`
 - What time works for you? | Hangi saat sana uyar?
 - Can we make it a bit later? | Biraz daha geç yapabilir miyiz?
 - I'll text you when I get there. | Varınca sana mesaj atarım.
+# 💇 Kuaförde
++ I'd like a haircut, please. | Saç kesimi istiyorum lütfen.
++ Just a trim, please. | Sadece uçlarından alın lütfen.
++ Could you take a little more off the sides? | Yanlardan biraz daha alabilir misiniz?
++ I'd like to book an appointment for Friday. | Cuma için randevu almak istiyorum.
++ That looks great, thank you! | Harika olmuş, teşekkürler!
+- How would you like it cut? | Nasıl kesmemizi istersiniz?
+- Do you want it shorter at the back? | Arkadan daha kısa olsun mu?
+- Would you like me to blow-dry it? | Fön çekeyim mi?
+# 🔧 Tamirci ve servis
++ My car won't start. | Arabam çalışmıyor.
++ There's a strange noise coming from the engine. | Motordan garip bir ses geliyor.
++ How much will the repair cost? | Tamir ne kadar tutar?
++ When will it be ready? | Ne zaman hazır olur?
++ Could you give me an estimate? | Bana bir tahmini fiyat verebilir misiniz?
+- What seems to be the problem? | Sorun nedir?
+- We'll need to order a part. | Bir parça sipariş etmemiz gerekecek.
+- It should be ready by Thursday. | Perşembeye hazır olur.
+# 🏠 Ev kiralama
++ I'm interested in the apartment you advertised. | İlan verdiğiniz daireyle ilgileniyorum.
++ How much is the rent per month? | Aylık kira ne kadar?
++ Are bills included? | Faturalar dahil mi?
++ Is the flat furnished? | Daire eşyalı mı?
++ How much is the deposit? | Depozito ne kadar?
++ Can I see it this weekend? | Bu hafta sonu görebilir miyim?
+- When would you like to move in? | Ne zaman taşınmak istersiniz?
+- The deposit is two months' rent. | Depozito iki aylık kira.
+- Pets are not allowed. | Evcil hayvan kabul edilmiyor.
+# 🏘️ Komşuyla
++ Hi, I'm your new neighbour. | Merhaba, ben yeni komşunuzum.
++ Sorry to bother you, could you turn the music down? | Rahatsız ettiğim için üzgünüm, müziği kısabilir misiniz?
++ Could you keep an eye on my flat while I'm away? | Ben yokken daireme göz kulak olabilir misiniz?
++ Do you know when the rubbish is collected? | Çöpün ne zaman alındığını biliyor musunuz?
+- Welcome to the building! | Binaya hoş geldiniz!
+- Let me know if you need anything. | Bir şeye ihtiyacınız olursa söyleyin.
+- Sorry about the noise last night. | Dün geceki gürültü için özür dilerim.
+# 😠 Şikâyet etme
++ I'd like to make a complaint. | Şikâyette bulunmak istiyorum.
++ This isn't what I ordered. | Bu sipariş ettiğim şey değil.
++ I've been waiting for over an hour. | Bir saatten fazladır bekliyorum.
++ Could I speak to the manager, please? | Müdürle görüşebilir miyim lütfen?
++ I'd like a refund, please. | Para iadesi istiyorum lütfen.
+- I'm very sorry for the inconvenience. | Verdiğimiz rahatsızlık için çok üzgünüm.
+- Let me see what I can do. | Neler yapabileceğime bakayım.
+- We'll replace it right away. | Hemen değiştireceğiz.
+# 🏛️ Resmî dairede
++ I'd like to renew my passport. | Pasaportumu yenilemek istiyorum.
++ Which documents do I need to bring? | Hangi belgeleri getirmem gerekiyor?
++ Where do I take a number? | Numarayı nereden alıyorum?
++ How long does the process take? | İşlem ne kadar sürer?
+- Next, please. | Sıradaki lütfen.
+- You're missing one document. | Bir belgeniz eksik.
+- Please come back tomorrow with a photo. | Lütfen yarın bir fotoğrafla tekrar gelin.
+# 🎟️ Bilet ve etkinlik
++ Two tickets for the eight o'clock show, please. | Saat sekizdeki seans için iki bilet lütfen.
++ Are there any seats left? | Boş yer var mı?
++ Is there a student discount? | Öğrenci indirimi var mı?
++ Where can I collect my tickets? | Biletlerimi nereden alabilirim?
+- Sorry, that show is sold out. | Üzgünüm, o seans dolu.
+- Seats are available in the back row. | Arka sırada yer var.
+- The film starts in ten minutes. | Film on dakika sonra başlıyor.
+# 🏋️ Spor salonunda
++ I'd like to sign up for a membership. | Üyelik kaydı yaptırmak istiyorum.
++ What are the opening hours? | Çalışma saatleri nedir?
++ Could you show me how to use this machine? | Bu aleti nasıl kullanacağımı gösterir misiniz?
++ Is there a trial session? | Deneme seansı var mı?
+- Do you want a monthly or yearly plan? | Aylık mı yıllık mı paket istersiniz?
+- Please wipe the machines after use. | Lütfen aletleri kullandıktan sonra silin.
+- The locker room is on the left. | Soyunma odası solda.
 `;
 
 // ---- Konuşma Kalıpları: durum bazlı "ne söylenir" rehberi ----
 const KAL=(()=>{const o=[];let c=null;KALRAW.split('\n').forEach(l=>{l=l.trim();if(!l)return;if(l[0]==='#'){c={t:l.slice(1).trim(),y:[],h:[]};o.push(c);}else if(l[0]==='+'||l[0]==='-'){const p=l.slice(1).split('|').map(x=>x.trim());if(p.length>=2)(l[0]==='+'?c.y:c.h).push([p[0],p[1]]);}});return o;})();
-let KL=null;
+let KL=null,KQ=null;
 function rKal(){
   const hd=`<button class="ghost sm" id="bk">← Çalış</button>`;
   if(!KL)KL={s:-1};
   if(KL.s<0){
-    $('#app').innerHTML=hd+`<h2>📋 Konuşma Kalıpları</h2><p class="sub">Günlük durumlarda ne söylenir, karşındaki ne der? Dokun ve dinle.</p>`+KAL.map((x,i)=>`<button class="ghost" data-s="${i}" style="width:100%;text-align:left;margin-bottom:6px">${esc(x.t)} <span class="small">• ${x.y.length+x.h.length} kalıp</span></button>`).join('');
-    $('#bk').onclick=toWork;document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{KL={s:+b.dataset.s};rKal();});return;}
+    $('#app').innerHTML=hd+`<h2>📋 Konuşma Kalıpları</h2><p class="sub">Günlük durumlarda ne söylenir, karşındaki ne der? Dokun ve dinle.</p>`+`<button id="kq" style="width:100%;margin-bottom:10px">🎯 Hepsinden sına (10 soru)</button>`+KAL.map((x,i)=>`<button class="ghost" data-s="${i}" style="width:100%;text-align:left;margin-bottom:6px">${esc(x.t)} <span class="small">• ${x.y.length+x.h.length} kalıp</span></button>`).join('');
+    $('#bk').onclick=toWork;$('#kq').onclick=()=>kqStart(-1);document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{KL={s:+b.dataset.s};rKal();});return;}
   const x=KAL[KL.s];
   const rows=(arr,k)=>arr.map((p,i)=>`<div class="card" style="padding:10px;margin:6px 0"><div style="display:flex;gap:8px;align-items:center"><button class="ghost sm" data-say="${k}${i}">🔊</button><div style="flex:1"><b>${esc(p[0])}</b><div class="small">🇹🇷 ${esc(p[1])}</div></div><button class="ghost sm" data-nb="${k}${i}" title="Deftere ekle">📒</button></div></div>`).join('');
-  $('#app').innerHTML=hd.replace('← Çalış','← Durumlar')+`<h2>${esc(x.t)}</h2><h3 style="margin:10px 0 4px">🗣️ Sen söyleyebilirsin</h3>${rows(x.y,'y')}<h3 style="margin:14px 0 4px">👂 Karşındaki söyleyebilir</h3>${rows(x.h,'h')}`;
-  $('#bk').onclick=()=>{KL=null;rKal();};
+  $('#app').innerHTML=hd.replace('← Çalış','← Durumlar')+`<h2>${esc(x.t)}</h2><button id="kq" style="width:100%">🎯 Bu durumu sına</button><h3 style="margin:10px 0 4px">🗣️ Sen söyleyebilirsin</h3>${rows(x.y,'y')}<h3 style="margin:14px 0 4px">👂 Karşındaki söyleyebilir</h3>${rows(x.h,'h')}`;
+  $('#bk').onclick=()=>{KL=null;rKal();};$('#kq').onclick=()=>kqStart(KL.s);
   const get=k=>{const a=k[0]==='y'?x.y:x.h;return a[+k.slice(1)];};
   document.querySelectorAll('[data-say]').forEach(b=>b.onclick=()=>say(get(b.dataset.say)[0],.8));
   document.querySelectorAll('[data-nb]').forEach(b=>b.onclick=()=>{const p=get(b.dataset.nb);toast(nbAdd(p[0],p[1],'')?'📒 Deftere eklendi':'Zaten defterinde');});
+}
+
+function kqStart(si){
+  const all=[];KAL.forEach((c,ci)=>c.y.concat(c.h).forEach(p=>all.push({p,ci})));
+  const pool=si<0?all:all.filter(a=>a.ci===si);
+  const qs=shuffle(pool.slice()).slice(0,si<0?10:Math.min(8,pool.length)).map(a=>{
+    const d=shuffle(all.filter(b=>b.p[0]!==a.p[0])).slice(0,3).map(b=>b.p[0]);
+    return {tr:a.p[1],ans:a.p[0],opts:shuffle([a.p[0]].concat(d))};});
+  KQ={si,qs,k:0,ok:0,first:true,done:false};view='kq';render();
+}
+function rKq(){
+  if(!KQ){view='kal';return rKal();}
+  const n=KQ.qs.length;
+  if(KQ.k>=n){bump(5);save();
+    $('#app').innerHTML=`<h2>🎉 Bitti!</h2><div class="card" style="text-align:center"><div style="font-size:42px;font-weight:800">${KQ.ok} / ${n}</div><p>ilk seferde doğru</p></div><div class="row"><button id="ag">Tekrar</button><button class="ghost" id="bk">Kalıplar</button></div>`;
+    $('#ag').onclick=()=>kqStart(KQ.si);$('#bk').onclick=()=>{KQ=null;KL=null;view='kal';render();};return;}
+  const q=KQ.qs[KQ.k];
+  $('#app').innerHTML=`<button class="ghost sm" id="bk">← Kalıplar</button><p class="sub">${KQ.k+1} / ${n}</p><div class="bar"><i style="width:${KQ.k/n*100}%"></i></div><div class="card"><div class="small">Şunu nasıl söylersin?</div><b style="font-size:19px">🇹🇷 ${esc(q.tr)}</b><div style="margin-top:10px">${q.opts.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join('')}</div><div id="nx"></div></div>`;
+  $('#bk').onclick=()=>{KQ=null;KL=null;view='kal';render();};
+  document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{if(KQ.done)return;
+    if(q.opts[+b.dataset.i]===q.ans){b.classList.add('ok');KQ.done=true;if(KQ.first){KQ.ok++;xpa(2);}document.querySelectorAll('.opt').forEach(o=>o.disabled=true);say(q.ans,.8);
+      $('#nx').innerHTML=`<button id="nb" style="margin-top:8px">${KQ.k+1>=n?'Bitir':'Devam'} ➜</button>`;$('#nb').onclick=()=>{KQ.k++;KQ.first=true;KQ.done=false;rKq();};}
+    else{if(KQ.first)misAdd({t:'x',q:q.tr+' — nasıl söylersin?',o:q.opts.slice(),a:q.ans});KQ.first=false;b.classList.add('bad');b.disabled=true;}});
 }
 
 // ---- English: okunuş rehberi ve tongue twisters ----
