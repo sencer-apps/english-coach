@@ -249,10 +249,10 @@ function pv(u){try{let pick=null;let sv=null;try{sv=localStorage.getItem('vc_'+V
 let view='home';
 const HASNET=typeof Peer!=='undefined';
 const NAV=[['home','🏠','Ana'],['story','📖','Hikâye'],['work','🧠','Çalış']].concat(HASNET?[['duel','⚔️','Yarış']]:[],[['prog','📊','İlerleme']]);
-const WORKV=['cards','quiz','nb','nbr','dict','speak','cloze','mis','tr','irr','dlg','gr','pic','ph','em','num','pron','ten','rdy','srs','lis','sen','wri','pr2','plan'];
+const WORKV=['cards','quiz','nb','nbr','dict','speak','cloze','mis','tr','irr','dlg','gr','pic','ph','em','num','pron','ten','rdy','srs','lis','sen','kal','wri','pr2','plan'];
 function renderNav(){$('#nav').innerHTML=NAV.map(n=>`<button data-v="${n[0]}" class="${view===n[0]||(view==='test'&&n[0]==='home')||(SUBV.includes(view)&&n[0]==='story')||(WORKV.includes(view)&&n[0]==='work')?'on':''}"><b>${n[1]}</b>${n[2]}</button>`).join('');
   $('#nav').querySelectorAll('button').forEach(b=>b.onclick=()=>{view=b.dataset.v;render();});}
-function render(){stopAudio();if(view!=='duel'&&DU&&!DU.keep)duelLeave();renderNav();({home:rHome,cards:rCards,quiz:rQuiz,chat:rChat,test:rTest,duel:rDuel,story:rStoryHome,reader:rReader,build:rBuild,prac:rPrac,exam:rExam,work:rWork,nb:rNb,nbr:rNbr,dict:rDict,speak:rSpeak,cloze:rCloze,mis:rMis,tr:rTr,irr:rIrr,dlg:rDlg,gr:rGr,pic:rPic,ph:rPh,em:rEm,num:rNum,pron:rPron,ten:rTen,rdy:rRdy,prog:rProg,srs:rSrs,lis:rLis,sen:rSen,wri:rWri,pr2:rPr2,plan:rPlan})[view]();window.scrollTo(0,0);}
+function render(){stopAudio();if(view!=='duel'&&DU&&!DU.keep)duelLeave();renderNav();({home:rHome,cards:rCards,quiz:rQuiz,chat:rChat,test:rTest,duel:rDuel,story:rStoryHome,reader:rReader,build:rBuild,prac:rPrac,exam:rExam,work:rWork,nb:rNb,nbr:rNbr,dict:rDict,speak:rSpeak,cloze:rCloze,mis:rMis,tr:rTr,irr:rIrr,dlg:rDlg,gr:rGr,pic:rPic,ph:rPh,em:rEm,num:rNum,pron:rPron,ten:rTen,rdy:rRdy,prog:rProg,srs:rSrs,lis:rLis,sen:rSen,kal:rKal,wri:rWri,pr2:rPr2,plan:rPlan})[view]();window.scrollTo(0,0);}
 const chips=()=>`<div class="row">${LEVELS.map(l=>`<button class="chip ${l===S.lvl?'sel':''}" data-l="${l}">${l}</button>`).join('')}</div>`;
 const tchips=()=>`<div class="row">${Object.entries(TOPICS).map(([k,v])=>`<button class="chip ${k===S.topic?'sel':''}" data-t="${k}">${v.ic} ${v.n}</button>`).join('')}</div>`;
 function wire(){document.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{S.lvl=b.dataset.l;save();render();});document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{S.topic=b.dataset.t;save();render();});}
@@ -963,6 +963,7 @@ function rWork(){
   <button id="w17" style="grid-column:span 2">📊 Zamanlar Tablosu</button>
   <button id="w18" style="grid-column:span 2">📰 Günlük Okuma</button>
   <button id="w19" style="grid-column:span 2">🔁 Aralıklı Tekrar</button>
+  <button id="w30" style="grid-column:span 2">📋 Konuşma Kalıpları</button>
   <button id="w20" style="grid-column:span 2">🎧 Dinleme</button>
   <button id="w21" style="grid-column:span 2">📅 Bugünün Planı</button>
   <button id="w22" style="grid-column:span 2">🎭 Gündelik Durumlar</button>
@@ -970,7 +971,7 @@ function rWork(){
   <button id="w24" style="grid-column:span 2">📖 Okunuş Rehberi & Tongue Twister</button></div>`;
   wire();
   const go=(id,v,f)=>$('#'+id).onclick=()=>{view=v;if(f)f();render();};
-  go('w1','nb');go('w2','dict');go('w3','speak');go('w4','cloze');go('w5','mis',()=>{MR=null;});go('w6','cards');go('w7','quiz',()=>{qz=null;});go('w8','tr');go('w9','irr',()=>{IR=null;});go('w10','dlg',()=>{if(DL)DL.sel=-1;});go('w11','gr',()=>{if(GR)GR.sel=-1;});go('w12','pic',()=>{PQ=null;});go('w13','ph',()=>{PH=null;});go('w14','em',()=>{EM=null;});go('w15','num',()=>{NQ=null;});go('w16','pron',()=>{PN=null;});go('w17','ten',()=>{TQ2=null;});go('w18','rdy',()=>{RDY=null;});go('w19','srs',()=>{SR2=null;});go('w20','lis',()=>{LS=null;});go('w21','plan');go('w22','sen',()=>{SN=null;});go('w23','wri',()=>{WR=null;});go('w24','pr2',()=>{P2={tab:'rgl',v:-1,rate:.6,res:null,msg:'',listening:false};});
+  go('w1','nb');go('w2','dict');go('w3','speak');go('w4','cloze');go('w5','mis',()=>{MR=null;});go('w6','cards');go('w7','quiz',()=>{qz=null;});go('w8','tr');go('w9','irr',()=>{IR=null;});go('w10','dlg',()=>{if(DL)DL.sel=-1;});go('w11','gr',()=>{if(GR)GR.sel=-1;});go('w12','pic',()=>{PQ=null;});go('w13','ph',()=>{PH=null;});go('w14','em',()=>{EM=null;});go('w15','num',()=>{NQ=null;});go('w16','pron',()=>{PN=null;});go('w17','ten',()=>{TQ2=null;});go('w18','rdy',()=>{RDY=null;});go('w19','srs',()=>{SR2=null;});go('w30','kal',()=>{KL=null;});go('w20','lis',()=>{LS=null;});go('w21','plan');go('w22','sen',()=>{SN=null;});go('w23','wri',()=>{WR=null;});go('w24','pr2',()=>{P2={tab:'rgl',v:-1,rate:.6,res:null,msg:'',listening:false};});
 }
 // ---- ilerleme ----
 const TOT={A1:20,A2:20,B1:14,B2:16,C1:8,C2:5};
@@ -1675,6 +1676,155 @@ function rWri(){
   if($('#nx'))$('#nx').onclick=()=>{WR={l:WR.l,i:(WR.i+1)%lv.length,res:null,txt:''};rWri();};
 }
 // ---- günlük plan ----
+const KALRAW=`
+# ✈️ Havalimanında
++ Where is the check-in desk for flight BA 204? | BA 204 uçuşu için check-in gişesi nerede?
++ I would like a window seat, please. | Cam kenarı bir koltuk istiyorum lütfen.
++ I have one bag to check in. | Bir bavulumu teslim edeceğim.
++ Is this the right gate for Istanbul? | İstanbul için doğru kapı bu mu?
++ What time does boarding start? | Biniş saat kaçta başlıyor?
++ My luggage hasn't arrived. | Bagajım gelmedi.
+- May I see your passport, please? | Pasaportunuzu görebilir miyim?
+- Did you pack your bags yourself? | Bavullarınızı kendiniz mi hazırladınız?
+- Your flight is delayed by forty minutes. | Uçuşunuz kırk dakika rötarlı.
+- Please place your laptop in a separate tray. | Lütfen dizüstü bilgisayarınızı ayrı bir tepsiye koyun.
+- Boarding will begin at gate twelve. | Biniş on iki numaralı kapıdan başlayacak.
+# 🍽️ Restoranda
++ A table for two, please. | İki kişilik bir masa lütfen.
++ Could we see the menu? | Menüye bakabilir miyiz?
++ What do you recommend? | Ne önerirsiniz?
++ I'm allergic to nuts. | Fındıklara alerjim var.
++ Could we have the bill, please? | Hesabı alabilir miyiz lütfen?
++ Everything was delicious. | Her şey çok lezzetliydi.
+- Do you have a reservation? | Rezervasyonunuz var mı?
+- Are you ready to order? | Sipariş vermeye hazır mısınız?
+- Would you like something to drink? | İçecek bir şey ister misiniz?
+- How would you like your steak cooked? | Bifteğinizi nasıl pişirelim?
+- Is everything all right with your meal? | Yemeğinizde her şey yolunda mı?
+# 💼 İş görüşmesinde
++ Thank you for inviting me. | Beni davet ettiğiniz için teşekkür ederim.
++ I have five years of experience in this field. | Bu alanda beş yıllık deneyimim var.
++ My greatest strength is teamwork. | En büyük gücüm ekip çalışması.
++ I'm looking for a new challenge. | Yeni bir meydan okuma arıyorum.
++ Could you tell me more about the team? | Ekip hakkında biraz daha bilgi verebilir misiniz?
++ When can I expect to hear from you? | Ne zaman haber bekleyebilirim?
+- Tell me about yourself. | Bana kendinizden bahsedin.
+- Why do you want to work here? | Neden burada çalışmak istiyorsunuz?
+- What are your strengths and weaknesses? | Güçlü ve zayıf yönleriniz neler?
+- Where do you see yourself in five years? | Beş yıl sonra kendinizi nerede görüyorsunuz?
+- Do you have any questions for us? | Bize sormak istediğiniz bir şey var mı?
+# 🏨 Otelde
++ I have a reservation under the name Kaya. | Kaya adına rezervasyonum var.
++ What time is check-out? | Check-out saat kaçta?
++ Could I have a late check-out? | Geç check-out yapabilir miyim?
++ The air conditioning doesn't work. | Klima çalışmıyor.
++ Could you call a taxi for me? | Bana bir taksi çağırabilir misiniz?
++ Is breakfast included? | Kahvaltı dahil mi?
+- Here is your key card. Your room is on the third floor. | İşte oda kartınız. Odanız üçüncü katta.
+- Breakfast is served from seven to ten. | Kahvaltı yedi ile on arası servis ediliyor.
+- How many nights will you be staying? | Kaç gece kalacaksınız?
+- Would you like a wake-up call? | Uyandırma servisi ister misiniz?
+# 🛍️ Alışverişte
++ How much is this? | Bu ne kadar?
++ Do you have this in a larger size? | Bunun daha büyük bedeni var mı?
++ Can I try this on? | Bunu deneyebilir miyim?
++ Do you accept credit cards? | Kredi kartı kabul ediyor musunuz?
++ I'd like to return this. | Bunu iade etmek istiyorum.
++ I'm just looking, thanks. | Sadece bakıyorum, teşekkürler.
+- Can I help you? | Yardımcı olabilir miyim?
+- The fitting rooms are over there. | Deneme kabinleri şurada.
+- Would you like a bag? | Poşet ister misiniz?
+- That will be thirty euros. | Bu otuz euro tutuyor.
+# 📞 Telefonda
++ Hello, this is Ali Kaya speaking. | Merhaba, ben Ali Kaya.
++ Could I speak to Mr. Brown, please? | Bay Brown ile görüşebilir miyim lütfen?
++ Could you speak more slowly, please? | Biraz daha yavaş konuşur musunuz lütfen?
++ Could you repeat that, please? | Tekrar eder misiniz lütfen?
++ I'll call you back later. | Sizi sonra tekrar ararım.
++ Can I leave a message? | Mesaj bırakabilir miyim?
+- Who's calling, please? | Kimi arıyorsunuz, kim arıyor?
+- Hold on, I'll put you through. | Bir saniye, sizi bağlıyorum.
+- He's not available right now. | Şu an müsait değil.
+- Would you like to leave a message? | Mesaj bırakmak ister misiniz?
+# 🏥 Doktor ve eczane
++ I have a headache and a fever. | Başım ağrıyor ve ateşim var.
++ I've had this pain since yesterday. | Bu ağrı dünden beri var.
++ I'm allergic to penicillin. | Penisiline alerjim var.
++ How often should I take this medicine? | Bu ilacı ne sıklıkla almalıyım?
++ Do I need a prescription? | Reçete gerekiyor mu?
+- What seems to be the problem? | Sorun nedir?
+- Where does it hurt? | Neresi ağrıyor?
+- Take one tablet twice a day after meals. | Günde iki kez yemeklerden sonra bir tablet alın.
+- You should get some rest. | Dinlenmelisiniz.
+# 🏦 Bankada ve postanede
++ I'd like to open an account. | Hesap açmak istiyorum.
++ I'd like to withdraw two hundred euros. | İki yüz euro çekmek istiyorum.
++ How long will this transfer take? | Bu havale ne kadar sürer?
++ I'd like to send this parcel to Turkey. | Bu paketi Türkiye'ye göndermek istiyorum.
+- Do you have an appointment? | Randevunuz var mı?
+- Could I see some ID, please? | Kimlik görebilir miyim?
+- Please fill in this form. | Lütfen bu formu doldurun.
+- It will arrive in three to five days. | Üç ile beş gün içinde ulaşır.
+# 💬 Günlük sohbet
++ How's it going? | Nasıl gidiyor?
++ Not bad, thanks. And you? | Fena değil, teşekkürler. Ya sen?
++ What do you do for a living? | Ne iş yapıyorsun?
++ Where are you from? | Nerelisin?
++ What are you up to this weekend? | Bu hafta sonu ne yapıyorsun?
++ That sounds great! | Harika görünüyor!
+- Long time no see! | Uzun zamandır görüşmüyorduk!
+- What have you been up to? | Neler yapıyorsun?
+- Nice weather today, isn't it? | Bugün hava güzel, değil mi?
+- I'll catch you later. | Sonra görüşürüz.
+# 🏢 İş yerinde ve toplantıda
++ Could we schedule a meeting for Monday? | Pazartesi için bir toplantı ayarlayabilir miyiz?
++ I'd like to make a suggestion. | Bir öneride bulunmak istiyorum.
++ I see your point, but I disagree. | Ne demek istediğini anlıyorum ama katılmıyorum.
++ I'll send you the report by Friday. | Raporu cumaya kadar sana göndereceğim.
++ Could you clarify what you mean? | Ne demek istediğinizi açıklar mısınız?
+- Let's get started. | Başlayalım.
+- Does anyone have any questions? | Sorusu olan var mı?
+- We need to finish this by the end of the week. | Bunu hafta sonuna kadar bitirmeliyiz.
+- Thank you all for coming. | Geldiğiniz için hepinize teşekkürler.
+# 🚕 Ulaşımda
++ How do I get to the station? | İstasyona nasıl gidebilirim?
++ Could you take me to the airport? | Beni havalimanına götürür müsünüz?
++ How much is the fare to the city centre? | Şehir merkezine ücret ne kadar?
++ Does this bus go to the museum? | Bu otobüs müzeye gidiyor mu?
++ Excuse me, is this seat taken? | Affedersiniz, bu koltuk dolu mu?
+- Go straight and turn left at the lights. | Düz gidin ve ışıklardan sola dönün.
+- The next train leaves at six. | Bir sonraki tren altıda kalkıyor.
+- You need to change at Central Station. | Merkez İstasyonu'nda aktarma yapmalısınız.
+# 👋 Arkadaşlarla plan yapma
++ Do you want to grab a coffee? | Kahve içmek ister misin?
++ How about Saturday evening? | Cumartesi akşamı nasıl?
++ I'm afraid I can't make it. | Maalesef gelemeyeceğim.
++ Let's meet in front of the cinema. | Sinemanın önünde buluşalım.
++ I'm running late, sorry! | Geç kalıyorum, özür dilerim!
+- Sounds good to me! | Bana uyar!
+- What time works for you? | Hangi saat sana uyar?
+- Can we make it a bit later? | Biraz daha geç yapabilir miyiz?
+- I'll text you when I get there. | Varınca sana mesaj atarım.
+`;
+
+// ---- Konuşma Kalıpları: durum bazlı "ne söylenir" rehberi ----
+const KAL=(()=>{const o=[];let c=null;KALRAW.split('\n').forEach(l=>{l=l.trim();if(!l)return;if(l[0]==='#'){c={t:l.slice(1).trim(),y:[],h:[]};o.push(c);}else if(l[0]==='+'||l[0]==='-'){const p=l.slice(1).split('|').map(x=>x.trim());if(p.length>=2)(l[0]==='+'?c.y:c.h).push([p[0],p[1]]);}});return o;})();
+let KL=null;
+function rKal(){
+  const hd=`<button class="ghost sm" id="bk">← Çalış</button>`;
+  if(!KL)KL={s:-1};
+  if(KL.s<0){
+    $('#app').innerHTML=hd+`<h2>📋 Konuşma Kalıpları</h2><p class="sub">Günlük durumlarda ne söylenir, karşındaki ne der? Dokun ve dinle.</p>`+KAL.map((x,i)=>`<button class="ghost" data-s="${i}" style="width:100%;text-align:left;margin-bottom:6px">${esc(x.t)} <span class="small">• ${x.y.length+x.h.length} kalıp</span></button>`).join('');
+    $('#bk').onclick=toWork;document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{KL={s:+b.dataset.s};rKal();});return;}
+  const x=KAL[KL.s];
+  const rows=(arr,k)=>arr.map((p,i)=>`<div class="card" style="padding:10px;margin:6px 0"><div style="display:flex;gap:8px;align-items:center"><button class="ghost sm" data-say="${k}${i}">🔊</button><div style="flex:1"><b>${esc(p[0])}</b><div class="small">🇹🇷 ${esc(p[1])}</div></div><button class="ghost sm" data-nb="${k}${i}" title="Deftere ekle">📒</button></div></div>`).join('');
+  $('#app').innerHTML=hd.replace('← Çalış','← Durumlar')+`<h2>${esc(x.t)}</h2><h3 style="margin:10px 0 4px">🗣️ Sen söyleyebilirsin</h3>${rows(x.y,'y')}<h3 style="margin:14px 0 4px">👂 Karşındaki söyleyebilir</h3>${rows(x.h,'h')}`;
+  $('#bk').onclick=()=>{KL=null;rKal();};
+  const get=k=>{const a=k[0]==='y'?x.y:x.h;return a[+k.slice(1)];};
+  document.querySelectorAll('[data-say]').forEach(b=>b.onclick=()=>say(get(b.dataset.say)[0],.8));
+  document.querySelectorAll('[data-nb]').forEach(b=>b.onclick=()=>{const p=get(b.dataset.nb);toast(nbAdd(p[0],p[1],'')?'📒 Deftere eklendi':'Zaten defterinde');});
+}
+
 // ---- English: okunuş rehberi ve tongue twisters ----
 const RGL=[
 ["th (sessiz)","/θ/ — dil dişlerin arasında, hafifçe üfle (Türkçede yok)","think, three, thanks, bath",["think","three","thanks","bath"]],
