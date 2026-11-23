@@ -1023,6 +1023,24 @@ function playSeq(sents,rate,onIdx,done){
     w=setTimeout(nx,Math.max(3000,sents[i].split(' ').length*650/rate+2500));};
   try{speechSynthesis.cancel();speechSynthesis.resume();}catch(e){}setTimeout(step,300);
 }
+const BISTEPS=[[1,'1️⃣ Türkçe → İngilizce','Önce Türkçe anlamı duyarsın, sonra İngilizce iki kez'],[2,'2️⃣ İngilizce → Türkçe','Önce İngilizce, sonra Türkçesi; kafanda eşleştirirsin'],[3,'3️⃣ İngilizce + tekrar','İngilizceyi dinle, boşlukta sen tekrar et, sonra tekrar dinle'],[4,'4️⃣ Sadece İngilizce','Anlamı artık biliyorsun; yalnız İngilizce dinle']];
+function trVoice(){try{return (speechSynthesis.getVoices()||[]).filter(v=>v.lang.toLowerCase().startsWith('tr')).sort((a,b)=>vScore(b)-vScore(a))[0]||null;}catch(e){return null;}}
+function spk(t,lang,rate,tok){return new Promise(res=>{if(tok!==AU.tok)return res();let d=false,w;const f=()=>{if(d)return;d=true;clearTimeout(w);res();};try{const u=new SpeechSynthesisUtterance(t);if(lang==='tr'){u.lang='tr-TR';const v=trVoice();if(v){u.voice=v;u.lang=v.lang;}}else{u.lang=VL;pv(u);}u.rate=rate;u.onend=f;u.onerror=f;speechSynthesis.speak(u);}catch(e){f();}w=setTimeout(f,Math.max(3000,t.split(' ').length*650/rate+2500));});}
+const wt_=ms=>new Promise(r=>setTimeout(r,ms));
+async function playBi(en,tr,mode,rate,onIdx,done){
+  stopAudio();if(!canWeb){done&&done();return;}const tok=AU.tok;AU.on=true;
+  try{speechSynthesis.cancel();speechSynthesis.resume();}catch(e){}await wt_(300);
+  for(let i=0;i<en.length;i++){
+    if(tok!==AU.tok)return;
+    const e=String(en[i]).replace(ZW,''),t=String(tr[i]||'').replace(ZW,''),gap=Math.max(1800,e.split(' ').length*550/rate+900);
+    if(mode===1){onIdx&&onIdx(i,'tr');await spk(t,'tr',.95,tok);await wt_(500);if(tok!==AU.tok)return;onIdx&&onIdx(i,'en');await spk(e,'en',rate,tok);await wt_(700);await spk(e,'en',rate,tok);}
+    else if(mode===2){onIdx&&onIdx(i,'en');await spk(e,'en',rate,tok);await wt_(600);if(tok!==AU.tok)return;onIdx&&onIdx(i,'tr');await spk(t,'tr',.95,tok);}
+    else if(mode===3){onIdx&&onIdx(i,'en');await spk(e,'en',rate,tok);if(tok!==AU.tok)return;onIdx&&onIdx(i,'me');await wt_(gap);if(tok!==AU.tok)return;onIdx&&onIdx(i,'en');await spk(e,'en',rate,tok);}
+    else{onIdx&&onIdx(i,'en');await spk(e,'en',rate,tok);}
+    await wt_(650);
+  }
+  if(tok!==AU.tok)return;AU.on=false;done&&done();
+}
 function rReader(){
   stopAudio();
   const d=DATA[CUR.l],s=d.stories[CUR.i];S.sd[s.n]=1;save();checkBadges();hintsGL(d);preloadAll();
@@ -1032,12 +1050,22 @@ function rReader(){
   <div class="card" id="txt" style="line-height:1.9;font-size:17px">${en.map((x,i)=>`<span class="sn" data-i="${i}" style="border-radius:6px;padding:1px 0">${toks(x)} </span>`).join('')}</div>
   <div class="row" style="margin-bottom:6px"><button class="chip ${RD.mode==='w'?'sel':''}" id="mw">👆 Kelimeye dokun</button><button class="chip ${RD.mode==='s'?'sel':''}" id="ms">🔊 Cümleye dokun</button></div>
   ${canSay()?`<div class="card"><div class="row"><button id="all">▶ Hikâyeyi baştan sona dinle</button><button class="ghost" id="stp" style="display:none">⏹ Durdur</button></div><div class="row" style="margin-top:8px"><span class="small">Hız:</span>${[['🐢',.5],['🚶',.7],['🏃',.9]].map(r=>`<button class="chip ${RD.rate===r[1]?'sel':''}" data-r="${r[1]}">${r[0]} ${r[1]}x</button>`).join('')}</div><div class="row" style="margin-top:8px"><span class="small">Ses:</span><select id="vsel" style="max-width:70%">${vList().map(v=>`<option value="${esc(v.voiceURI)}">${esc(v.name)}</option>`).join('')||'<option>Varsayılan</option>'}</select><button class="ghost" id="vtest">▶ Dene</button></div></div>`:''}
+  ${canSay()?(tal?`<div class="card" id="bic"><b>🎧 Çift dilli dinle</b><div class="small" style="margin:4px 0 8px">İngilizce ile Türkçeyi kulağında eşleştir. 1'den 4'e adım adım ilerle.</div>${BISTEPS.map(b=>`<button class="chip ${RD.bi===b[0]?'sel':''}" data-bi="${b[0]}">${b[1]}</button>`).join('')}<div class="small" style="margin:8px 0">${esc((BISTEPS.find(b=>b[0]===(RD.bi||1))||BISTEPS[0])[2])}</div><div class="row"><button id="bgo">▶ Başlat</button><button class="ghost" id="bst" style="display:none">⏹ Durdur</button></div></div>`:`<div class="card small">🎧 Çift dilli dinleme bu hikâyede yok (cümle eşleşmesi yok).</div>`):''}
   <div class="row"><button class="ghost" id="ttr">${showTR?'Türkçeyi gizle':'🇹🇷 Türkçesini göster'}</button></div>
   ${showTR?(tal?`<div class="card" id="trc" style="line-height:1.6;color:#374151">${ttr.map((x,i)=>`<span class="tn" data-i="${i}">${dlgSpan(x.replace(ZW,''),'wt')} </span>`).join('')}</div>`:`<div class="card" id="trc" style="line-height:1.6;color:#374151">${dlgSpan(s.tr.replace(ZW,''),'wt')}</div>`):''}
   <button id="bd" style="width:100%;margin-top:12px">✍️ Şimdi cümle kur</button>
   <div class="row" style="margin-top:8px">${CUR.i>0?'<button class="ghost" id="pv">◀ Önceki</button>':''}${CUR.i<d.stories.length-1?'<button class="ghost" id="nx">Sonraki ▶</button>':''}</div><div id="wp"></div>`;
   $('#bk').onclick=()=>{stopAudio();view='story';render();};
   $('#ttr').onclick=()=>{showTR=!showTR;rReader();};
+  document.querySelectorAll('[data-bi]').forEach(b=>b.onclick=()=>{RD.bi=+b.dataset.bi;rReader();});
+  if($('#bgo')){
+    const clr=()=>document.querySelectorAll('.sn,.tn').forEach(e=>{e.style.background='';});
+    const bhl=(i,w)=>{clr();const a=document.querySelector(`.sn[data-i="${i}"]`),b=document.querySelector(`.tn[data-i="${i}"]`);if(w==='tr'&&b){b.style.background='#dcfce7';b.scrollIntoView&&b.scrollIntoView({block:'center',behavior:'smooth'});}else if(a){a.style.background=w==='me'?'#fef3c7':'#e0e7ff';a.scrollIntoView&&a.scrollIntoView({block:'center',behavior:'smooth'});}if(w==='me')toast('🗣 Şimdi sen tekrar et');};
+    const go=()=>{$('#bgo').style.display='none';$('#bst').style.display='';playBi(en,ttr,RD.bi||1,RD.rate,bhl,()=>{clr();if($('#bgo')){$('#bgo').style.display='';$('#bst').style.display='none';}toast('✅ Bitti');});};
+    $('#bgo').onclick=()=>{if(!showTR){showTR=true;RD.autoBi=true;rReader();return;}go();};
+    if(RD.autoBi){RD.autoBi=false;setTimeout(()=>{if($('#bgo'))go();},60);}
+    $('#bst').onclick=()=>{stopAudio();clr();$('#bgo').style.display='';$('#bst').style.display='none';};
+  }
   $('#mw').onclick=()=>{RD.mode='w';rReader();};$('#ms').onclick=()=>{RD.mode='s';rReader();};
   {const vs=$('#vsel');if(vs){let sv=null;try{sv=localStorage.getItem('vc_'+VL);}catch(e){}if(sv)vs.value=sv;vs.onchange=()=>{try{localStorage.setItem('vc_'+VL,vs.value);}catch(e){}};const vt=$('#vtest');if(vt)vt.onclick=()=>{try{localStorage.setItem('vc_'+VL,vs.value);}catch(e){}stopAudio();say(en[0].replace(ZW,''),RD.rate);};}}
   document.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{RD.rate=+b.dataset.r;rReader();});
