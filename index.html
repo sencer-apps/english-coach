@@ -1041,7 +1041,7 @@ async function playBi(en,tr,mode,rate,onIdx,done){
   }
   if(tok!==AU.tok)return;AU.on=false;done&&done();
 }
-const COVERS=[1,21,41,57,73,81];
+const COVERS=[1,2,3,4,5,6,7,8,9,21,41,57,73,81];
 function rReader(){
   stopAudio();
   const d=DATA[CUR.l],s=d.stories[CUR.i];S.sd[s.n]=1;save();checkBadges();hintsGL(d);preloadAll();
