@@ -570,12 +570,12 @@ const pcount=a=>Object.keys(a||{}).length;
 const NEXT={A1:'A2',A2:'B1',B1:'B2',B2:'C1',C1:'C2'};
 let CUR=null; // {l,i} seçili hikâye/pratik
 async function rStoryHome(){
-  $('#app').innerHTML=`<h2>📖 Hikâye Yolculuğu</h2><p class="sub">Mr. Lane ve çocuğun gizemli ev macerası. Hikâyeyi oku, dinle, sonra kendi cümlelerini kur.</p>${chips()}<div class="card small">Yükleniyor…</div>`;wire();
+  $('#app').innerHTML=`<h2>📖 Hikâye Yolculuğu</h2><p class="sub">Lane Bey ve çocuğun gizemli ev macerası. Hikâyeyi oku, dinle, sonra kendi cümlelerini kur.</p>${chips()}<div class="card small">Yükleniyor…</div>`;wire();
   const d=await loadLevel(S.lvl);if(view!=='story')return;
   if(!d&&!LK[S.lvl]){$('#app').innerHTML=`<h2>📖 Hikâye Yolculuğu</h2>${chips()}<div class="card">Bu seviye üyeliğine dahil değil. Daha fazlası için seni davet eden kişiye yaz.</div>`;wire();return;}
   if(!d){$('#app').innerHTML=`<h2>📖 Hikâye Yolculuğu</h2>${chips()}<div class="card">Hikâyeler yüklenemedi. İnternet bağlantını kontrol et.</div>`;wire();return;}
   const sd=S.sd,bd=S.bd,pd=S.pd,e=S.ex[S.lvl];
-  $('#app').innerHTML=`<h2>📖 Hikâye Yolculuğu</h2><p class="sub">Mr. Lane ve çocuğun gizemli ev macerası.</p>${chips()}
+  $('#app').innerHTML=`<h2>📖 Hikâye Yolculuğu</h2><p class="sub">Lane Bey ve çocuğun gizemli ev macerası.</p>${chips()}
   <div class="card"><b>${d.level} • ${d.stories.length} hikâye</b><p class="small">Okudun: ${d.stories.filter(s=>sd[s.n]).length} • Cümle kurdun: ${d.stories.filter(s=>bd[s.n]).length}</p>
   ${d.stories.map((s,i)=>`<button class="opt" data-st="${i}">${bd[s.n]?'✅':sd[s.n]?'📗':'📘'} ${s.n}. ${esc(s.title.split(' / ')[0])}<br><span class="small">${(S.bi&&S.bi[s.n]&&S.bi[s.n].length)?'🎧 '+S.bi[s.n].length+'/4 • ':''}${esc(s.focus)}</span></button>`).join('')}</div>
   <div class="card"><b>✍️ Pratik: Türkçeden İngilizceye çevir</b><p class="sub">Sana Türkçe hikâye cümleleri veririm, sen İngilizcesini yazarsın.</p>${d.practice.map((p,i)=>`<button class="opt" data-pr="${i}">${pd[d.level+p.n]?'✅':'✍️'} ${p.n}. ${esc(p.title)}<br><span class="small">${esc(p.focus)}</span></button>`).join('')}</div>
