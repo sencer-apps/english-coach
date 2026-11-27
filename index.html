@@ -702,6 +702,8 @@ function rNb(){
   $('#bk').onclick=toWork;$('#go').onclick=()=>{NR=null;view='nbr';render();};
   document.querySelectorAll('[data-np]').forEach(b=>b.onclick=()=>{S.npd=+b.dataset.np;save();rNb();});
   $('#na').onclick=()=>{const w=$('#nw').value,t=$('#nt').value;if(!w.trim()||!t.trim()){toast('İki alanı da doldur');return;}toast(nbAdd(w,t,'')?'Deftere eklendi ✅':'Bu kelime zaten defterinde');rNb();};
+  const fillTr=async()=>{const w=$('#nw').value.trim();if(!w||$('#nt').value.trim())return;const e=lookup(w);if(e&&e.tr){$('#nt').value=e.tr;return;}const o=await meanOnline(w.toLowerCase());if(o&&!$('#nt').value.trim())$('#nt').value=String(o).trim();};
+  $('#nw').addEventListener('change',fillTr);$('#nw').addEventListener('blur',fillTr);
   $('#nl').onclick=async()=>{await loadLevel(S.lvl);let a=0;Object.values(DECK).forEach(t=>(t[S.lvl]||[]).forEach(x=>{if(nbAdd(x.w,x.tr,x.ex,true))a++;}));save();checkBadges();toast(a+' kelime eklendi, günde '+S.npd+' tanesi tekrara girer');rNb();};
   $('#bks').onclick=()=>{S.book=$('#bkn').value.trim();save();toast(S.book?'Aktif kitap: '+S.book:'Kitap temizlendi');rNb();};
   document.querySelectorAll('[data-bf]').forEach(b=>b.onclick=()=>{S.bf=b.dataset.bf;save();rNb();});
