@@ -255,7 +255,7 @@ function vList(){const p=VL.slice(0,2).toLowerCase();return VOICES.filter(v=>v.l
 function pv(u){try{let pick=null;let sv=null;try{sv=localStorage.getItem('vc_'+VL);}catch(e){}const l=vList();if(sv)pick=l.find(v=>v.voiceURI===sv);if(!pick)pick=l[0];if(pick){u.voice=pick;u.lang=pick.lang;}}catch(e){}}
 // ---- görünüm ----
 let view='home';
-const HASNET=typeof Peer!=='undefined';
+const HASNET=true;
 const NAV=[['home','🏠','Ana'],['story','📖','Hikâye'],['work','🧠','Çalış']].concat(HASNET?[['duel','⚔️','Yarış']]:[],[['prog','📊','İlerleme']]);
 const WORKV=['cards','quiz','nb','nbr','dict','speak','cloze','mis','tr','irr','dlg','gr','pic','ph','em','num','pron','ten','rdy','srs','lis','sen','kal','kq','wri','pr2','plan','itp','fam'];
 function renderNav(){$('#nav').innerHTML=NAV.map(n=>`<button data-v="${n[0]}" class="${view===n[0]||(view==='test'&&n[0]==='home')||(SUBV.includes(view)&&n[0]==='story')||(WORKV.includes(view)&&n[0]==='work')?'on':''}"><b>${n[1]}</b>${n[2]}</button>`).join('');
@@ -424,7 +424,32 @@ async function suggest(){
 
 // ---- yarış (canlı, PeerJS) ----
 let DU=null;const QMS=15000,DMAX=30;
-const PEEROPT={config:{iceServers:[{urls:'stun:openrelay.metered.ca:80'},{urls:['turn:openrelay.metered.ca:80','turn:openrelay.metered.ca:443','turn:openrelay.metered.ca:443?transport=tcp'],username:'openrelayproject',credential:'openrelayproject'}]}};
+const RELAYCH=class{constructor(p,id){this.p=p;this.id=id;this.h={};}on(e,f){(this.h[e]=this.h[e]||[]).push(f);return this;}emit(e,...a){(this.h[e]||[]).forEach(f=>{try{f(...a);}catch(x){}});}send(m){const p=this.p;if(!p.ws||p.ws.readyState!==1)return;p.ws.send(JSON.stringify(p.role==='host'?{to:this.id,data:m}:m));}close(){}};
+// Oda bağlantısı: Cloudflare üzerindeki oda sunucusu (WebSocket). Eski PeerJS yerine geçer.
+class Relay{
+  constructor(code,role){this.code=code;this.role=role;this.h={};this.conns={};this.chan=null;this.open=false;this.destroyed=false;this._open();}
+  on(e,f){(this.h[e]=this.h[e]||[]).push(f);return this;}
+  emit(e,...a){(this.h[e]||[]).forEach(f=>{try{f(...a);}catch(x){}});}
+  _open(){
+    let ws;try{ws=new WebSocket(API.replace(/^http/,'ws')+'/room?role='+this.role+'&code='+this.code);}catch(e){this.emit('error',{type:'network'});return;}
+    this.ws=ws;
+    ws.onopen=()=>{if(this.role==='guest'){this.open=true;this.emit('open');}};
+    ws.onmessage=e=>{let m;try{m=JSON.parse(e.data);}catch(x){return;}this.recv(m);};
+    ws.onerror=()=>{if(!this.open)this.emit('error',{type:'network'});};
+    ws.onclose=()=>{if(this.destroyed)return;this.open=false;if(this.role==='host')this.emit('disconnected');else if(this.chan)this.chan.emit('close');};
+  }
+  recv(m){
+    if(m.$err){this.emit('error',{type:{taken:'unavailable-id',nohost:'peer-unavailable',full:'full'}[m.$err]||'network'});return;}
+    if(m.$ready){if(this.role==='host'){this.open=true;this.emit('open');}else if(this.chan)this.chan.emit('open');return;}
+    if(m.$join){const c=new RELAYCH(this,m.$join);this.conns[m.$join]=c;this.emit('connection',c);c.emit('open');return;}
+    if(m.$leave){const c=this.conns[m.$leave];delete this.conns[m.$leave];if(c)c.emit('close');return;}
+    if(this.role==='host'){const c=this.conns[m.from];if(c)c.emit('data',m.data);return;}
+    if(this.chan)this.chan.emit('data',m);
+  }
+  connect(){this.chan=new RELAYCH(this,null);return this.chan;}
+  reconnect(){this._open();}
+  destroy(){this.destroyed=true;try{this.ws&&this.ws.close();}catch(e){}}
+}
 const cleanName=s=>String(s||'').replace(/[<>&"']/g,'').trim().slice(0,14)||'Oyuncu';
 function duelLeave(){if(!DU)return;try{clearTimeout(DU.timer);clearInterval(DU.tick);DU.peer&&DU.peer.destroy();}catch(e){}DU=null;}
 function dsend(c,m){try{c.send(m);}catch(e){}}
@@ -443,7 +468,7 @@ function rDuel(){
 function dmsg(t){const e=$('#dmsg');if(e)e.textContent=t;else{view='duel';DU=null;render();setTimeout(()=>{const x=$('#dmsg');if(x)x.textContent=t;},0);}}
 function duelHost(name,n=0){
   duelLeave();const code=String(1000+Math.floor(Math.random()*9000));let peer;
-  try{peer=new Peer('ecq-'+code,PEEROPT);}catch(e){dmsg('Bağlantı kurulamadı.');return;}
+  try{peer=new Relay(code,'host');}catch(e){dmsg('Bağlantı kurulamadı.');return;}
   const d=DU={role:'host',peer,code,conns:{},players:[{id:'h',name,score:0,lvl:S.lvl}],topic:S.dall?'all':S.topic,phase:'lobby',me:'h',nid:1,keep:true,ui:{}};
   peer.on('open',()=>{if(DU!==d)return;d.opened=true;view='duel';render();});
   peer.on('disconnected',()=>{try{if(DU===d&&!peer.destroyed)peer.reconnect();}catch(e){}});
@@ -466,14 +491,14 @@ function duelHost(name,n=0){
 }
 function duelJoin(name,code){
   duelLeave();let peer;
-  try{peer=new Peer(PEEROPT);}catch(e){dmsg('Bağlantı kurulamadı.');return;}
+  try{peer=new Relay(code,'guest');}catch(e){dmsg('Bağlantı kurulamadı.');return;}
   const d=DU={role:'guest',peer,code,players:[],phase:'lobby',me:null,keep:true,ui:{},name};
   dmsg('Odaya bağlanılıyor…');
   const fail=t=>{if(DU!==d)return;duelLeave();dmsg(t);};
   const to=setTimeout(()=>fail('Bağlanamadı. Kodu kontrol et ve kurucunun sayfası açık olsun.'),20000);
   peer.on('error',e=>{if(d.joined)return;clearTimeout(to);fail(e&&e.type==='peer-unavailable'?'Bu kodda oda yok.':'İnternet bağlantısı kurulamadı.');});
   peer.on('open',()=>{
-    if(DU!==d||d.conn)return;const c=peer.connect('ecq-'+code,{reliable:true});d.conn=c;
+    if(DU!==d||d.conn)return;const c=peer.connect();d.conn=c;
     c.on('open',()=>{d.joined=true;clearTimeout(to);dmsg('Bağlandı, kurucu bekleniyor…');dsend(c,{t:'hello',name,lvl:S.lvl});});
     c.on('data',m=>{if(DU!==d||!m||typeof m!=='object')return;
       if(m.t==='welcome')d.me=String(m.id);
