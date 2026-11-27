@@ -423,7 +423,7 @@ async function suggest(){
 }
 
 // ---- yarış (canlı, PeerJS) ----
-let DU=null;const QMS=15000,DMAX=8;
+let DU=null;const QMS=15000,DMAX=30;
 const cleanName=s=>String(s||'').replace(/[<>&"']/g,'').trim().slice(0,14)||'Oyuncu';
 function duelLeave(){if(!DU)return;try{clearTimeout(DU.timer);clearInterval(DU.tick);DU.peer&&DU.peer.destroy();}catch(e){}DU=null;}
 function dsend(c,m){try{c.send(m);}catch(e){}}
