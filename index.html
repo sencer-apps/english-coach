@@ -424,6 +424,7 @@ async function suggest(){
 
 // ---- yarış (canlı, PeerJS) ----
 let DU=null;const QMS=15000,DMAX=30;
+const PEEROPT={config:{iceServers:[{urls:'stun:openrelay.metered.ca:80'},{urls:['turn:openrelay.metered.ca:80','turn:openrelay.metered.ca:443','turn:openrelay.metered.ca:443?transport=tcp'],username:'openrelayproject',credential:'openrelayproject'}]}};
 const cleanName=s=>String(s||'').replace(/[<>&"']/g,'').trim().slice(0,14)||'Oyuncu';
 function duelLeave(){if(!DU)return;try{clearTimeout(DU.timer);clearInterval(DU.tick);DU.peer&&DU.peer.destroy();}catch(e){}DU=null;}
 function dsend(c,m){try{c.send(m);}catch(e){}}
@@ -442,7 +443,7 @@ function rDuel(){
 function dmsg(t){const e=$('#dmsg');if(e)e.textContent=t;else{view='duel';DU=null;render();setTimeout(()=>{const x=$('#dmsg');if(x)x.textContent=t;},0);}}
 function duelHost(name,n=0){
   duelLeave();const code=String(1000+Math.floor(Math.random()*9000));let peer;
-  try{peer=new Peer('ecq-'+code);}catch(e){dmsg('Bağlantı kurulamadı.');return;}
+  try{peer=new Peer('ecq-'+code,PEEROPT);}catch(e){dmsg('Bağlantı kurulamadı.');return;}
   const d=DU={role:'host',peer,code,conns:{},players:[{id:'h',name,score:0,lvl:S.lvl}],topic:S.dall?'all':S.topic,phase:'lobby',me:'h',nid:1,keep:true,ui:{}};
   peer.on('open',()=>{if(DU!==d)return;d.opened=true;view='duel';render();});
   peer.on('disconnected',()=>{try{if(DU===d&&!peer.destroyed)peer.reconnect();}catch(e){}});
@@ -465,7 +466,7 @@ function duelHost(name,n=0){
 }
 function duelJoin(name,code){
   duelLeave();let peer;
-  try{peer=new Peer();}catch(e){dmsg('Bağlantı kurulamadı.');return;}
+  try{peer=new Peer(PEEROPT);}catch(e){dmsg('Bağlantı kurulamadı.');return;}
   const d=DU={role:'guest',peer,code,players:[],phase:'lobby',me:null,keep:true,ui:{},name};
   const fail=t=>{if(DU!==d)return;duelLeave();dmsg(t);};
   const to=setTimeout(()=>fail('Oda bulunamadı. Kodu kontrol et.'),15000);
