@@ -468,12 +468,13 @@ function duelJoin(name,code){
   duelLeave();let peer;
   try{peer=new Peer(PEEROPT);}catch(e){dmsg('Bağlantı kurulamadı.');return;}
   const d=DU={role:'guest',peer,code,players:[],phase:'lobby',me:null,keep:true,ui:{},name};
+  dmsg('Odaya bağlanılıyor…');
   const fail=t=>{if(DU!==d)return;duelLeave();dmsg(t);};
-  const to=setTimeout(()=>fail('Oda bulunamadı. Kodu kontrol et.'),15000);
+  const to=setTimeout(()=>fail('Bağlanamadı. Kodu kontrol et ve kurucunun sayfası açık olsun.'),20000);
   peer.on('error',e=>{if(d.joined)return;clearTimeout(to);fail(e&&e.type==='peer-unavailable'?'Bu kodda oda yok.':'İnternet bağlantısı kurulamadı.');});
   peer.on('open',()=>{
     if(DU!==d||d.conn)return;const c=peer.connect('ecq-'+code,{reliable:true});d.conn=c;
-    c.on('open',()=>{d.joined=true;clearTimeout(to);dsend(c,{t:'hello',name,lvl:S.lvl});});
+    c.on('open',()=>{d.joined=true;clearTimeout(to);dmsg('Bağlandı, kurucu bekleniyor…');dsend(c,{t:'hello',name,lvl:S.lvl});});
     c.on('data',m=>{if(DU!==d||!m||typeof m!=='object')return;
       if(m.t==='welcome')d.me=String(m.id);
       else if(m.t==='full'){fail('Oda dolu.');}
